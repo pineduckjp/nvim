@@ -40,3 +40,17 @@ opt.list = true
 opt.listchars:append("space:·")
 
 vim.o.pumheight = 6
+
+vim.opt.clipboard = "unnamedplus"
+
+local osc52 = require("vim.ui.clipboard.osc52")
+local function paste()
+  -- 端末への読み取り要求は送らず、内部レジスタを返す(フリーズ防止)
+  return { vim.fn.split(vim.fn.getreg(""), "\n"), vim.fn.getregtype("") }
+end
+
+vim.g.clipboard = {
+  name = "OSC 52 (copy only)",
+  copy = { ["+"] = osc52.copy("+"), ["*"] = osc52.copy("*") },
+  paste = { ["+"] = paste, ["*"] = paste },
+}
